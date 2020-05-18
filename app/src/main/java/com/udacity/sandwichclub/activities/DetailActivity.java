@@ -1,4 +1,4 @@
-package com.udacity.sandwichclub;
+package com.udacity.sandwichclub.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.sandwichclub.R;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -72,6 +72,8 @@ public class DetailActivity extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(sandwich.getImage())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.noimagefound)
                 .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
@@ -84,14 +86,14 @@ public class DetailActivity extends AppCompatActivity {
 
     //Update populateUI to take the Sandwich model as a parameter, populate our UI views, and hide empty content areas
     private void populateUI(Sandwich sandwich) {
-        descriptionTv = (TextView) findViewById(R.id.description_tv);
-        placeOfOriginTv = (TextView) findViewById(R.id.origin_tv);
-        alsoKnownAsTv = (TextView) findViewById(R.id.also_known_tv);
-        ingredientsTv = (TextView) findViewById(R.id.ingredients_tv);
-        descriptionLl = (LinearLayout) findViewById(R.id.description_ll);
-        placeOfOriginLl = (LinearLayout) findViewById(R.id.origin_ll);
-        alsoKnownAsLl = (LinearLayout) findViewById(R.id.also_known_ll);
-        ingredientsLl = (LinearLayout) findViewById(R.id.ingredients_ll);
+        descriptionTv = findViewById(R.id.description_tv);
+        placeOfOriginTv = findViewById(R.id.origin_tv);
+        alsoKnownAsTv = findViewById(R.id.also_known_tv);
+        ingredientsTv = findViewById(R.id.ingredients_tv);
+        descriptionLl = findViewById(R.id.description_ll);
+        placeOfOriginLl = findViewById(R.id.origin_ll);
+        alsoKnownAsLl = findViewById(R.id.also_known_ll);
+        ingredientsLl = findViewById(R.id.ingredients_ll);
 
         //Load Description to UI if available
         String descriptionText = sandwich.getDescription();
@@ -112,34 +114,24 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         //Load  Also Known As to UI if available
-        StringBuilder alsoKnownAsText = new StringBuilder("");
+        String alsoKnownAsText = null;
         List<String> alsoKnownAsList = sandwich.getAlsoKnownAs();
         if(alsoKnownAsList == null || alsoKnownAsList.isEmpty()) {
             alsoKnownAsLl.setVisibility(View.GONE);
         } else {
-            int i = 0;
-            for(String aka : alsoKnownAsList) {
-                alsoKnownAsText.append(aka);
-                i++;
-                if(i < alsoKnownAsList.size()) {
-                    alsoKnownAsText.append(", ");
-                }
-            }
-            alsoKnownAsTv.setText(alsoKnownAsText.toString());
+            alsoKnownAsText = TextUtils.join(",", alsoKnownAsList);
+            alsoKnownAsTv.setText(alsoKnownAsText);
             alsoKnownAsLl.setVisibility(View.VISIBLE);
         }
 
         //Load Ingredients to UI if available
-        StringBuilder ingredientsText = new StringBuilder();
+        String ingredientsText = null;
         List<String> ingredientsList = sandwich.getIngredients();
         if(ingredientsList == null || ingredientsList.isEmpty()) {
             ingredientsLl.setVisibility(View.GONE);
         } else {
-            int i = 0;
-            for(String ingredient : ingredientsList) {
-                ingredientsText.append(ingredient + "\r\n");
-            }
-            ingredientsTv.setText(ingredientsText.toString());
+            ingredientsText = TextUtils.join("\n\r", ingredientsList);
+            ingredientsTv.setText(ingredientsText);
             ingredientsLl.setVisibility(View.VISIBLE);
         }
 

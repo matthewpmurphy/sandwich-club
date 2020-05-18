@@ -17,15 +17,13 @@ public class JsonUtils {
         if(jsonArray == null) {
             return null;
         }
-        try {
-            int jArrayLength = jsonArray.length();
-            sArray = new String[jArrayLength];
-            for(int i = 0; i < jArrayLength; i++) {
-                sArray[i] = jsonArray.getString(i);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        int jArrayLength = jsonArray.length();
+        sArray = new String[jArrayLength];
+        for(int i = 0; i < jArrayLength; i++) {
+            sArray[i] = jsonArray.optString(i);
         }
+
 
         return Arrays.asList(sArray);
     }
@@ -43,13 +41,13 @@ public class JsonUtils {
 
         try {
             JSONObject sandwichJSON = new JSONObject(json);
-            JSONObject name = new JSONObject(sandwichJSON.getString("name"));
-            mainName = name.getString("mainName");
-            alsoKnownAs = ConvertJsonArrayToStringArray(name.getJSONArray("alsoKnownAs"));
-            placeOfOrigin = sandwichJSON.getString("placeOfOrigin");
-            description = sandwichJSON.getString("description");
-            image = sandwichJSON.getString("image");
-            ingredients = ConvertJsonArrayToStringArray(sandwichJSON.getJSONArray("ingredients"));
+            JSONObject name = sandwichJSON.optJSONObject(Constants.SANDWICH_NAME);
+            mainName = name.optString(Constants.SANDWICH_MAIN_NAME);
+            alsoKnownAs = ConvertJsonArrayToStringArray(name.optJSONArray(Constants.SANDWICH_ALSO_KNOWN_AS));
+            placeOfOrigin = sandwichJSON.optString(Constants.SANDWICH_PLACE_OF_ORIGIN);
+            description = sandwichJSON.optString(Constants.SANDWICH_DESCRIPTION);
+            image = sandwichJSON.optString(Constants.SANDWICH_IMAGE);
+            ingredients = ConvertJsonArrayToStringArray(sandwichJSON.optJSONArray(Constants.SANDWICH_INGREDIENTS));
             sandwich = new Sandwich(mainName, alsoKnownAs, placeOfOrigin, description, image, ingredients);
         } catch (JSONException e) {
             e.printStackTrace();
